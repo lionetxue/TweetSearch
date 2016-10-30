@@ -28,3 +28,9 @@ project/plugins/project/
 .scala_dependencies
 .worksheet
 
+# Generated tweets json files folder
+src/main/resources/tweets/
+
+# config files contains token
+.conf
+

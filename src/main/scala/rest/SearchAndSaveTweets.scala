@@ -3,6 +3,10 @@ package rest
 import com.danielasfregola.twitter4s.TwitterRestClient
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.entities.enums.ResultType
+import com.danielasfregola.twitter4s.entities.enums.Language
+import com.danielasfregola.twitter4s.entities.GeoCode
+import com.danielasfregola.twitter4s.entities.Accuracy
+import com.danielasfregola.twitter4s.entities.enums.Measure
 import com.typesafe.config.ConfigFactory
 import utils.FileSupport
 
@@ -20,8 +24,8 @@ object SearchAndSaveTweets extends App with FileSupport {
       //example: "?max_id=658200158442790911&q=%23scala&include_entities=1&result_type=mixed"
       params.getOrElse("").split("&").find(_.contains("max_id")).map(_.split("=")(1).toLong)
     }
-
-    client.searchTweet(query, count = 100, result_type = ResultType.Recent, max_id = max_id).flatMap { result =>
+    val radius = Accuracy(10, Measure.Meter) 
+    client.searchTweet(query, count = 100, result_type = ResultType.Recent, geocode = Some(GeoCode(42, -76, radius)), language = Some(Language.English), max_id = max_id).flatMap { result =>
         val nextMaxId = extractNextMaxId(result.search_metadata.next_results)
         val tweets = result.statuses
         if (tweets.nonEmpty) searchTweets(query, nextMaxId).map(_ ++ tweets)
@@ -34,7 +38,7 @@ object SearchAndSaveTweets extends App with FileSupport {
     config.getString("tweets.scalax")
   }
 
-  searchTweets("#scalax").map { tweets =>
+  searchTweets("#cuzincks").map { tweets =>
     println(s"Downloaded ${tweets.size} tweets")
     toFileAsJson(filename, tweets)
     println(s"Tweets saved to file $filename")
