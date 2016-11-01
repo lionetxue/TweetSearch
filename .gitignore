@@ -30,6 +30,7 @@ project/plugins/project/
 
 #Ignore configuration file
 .conf
+application.conf
 
 #Ignore folder contains generated json
 src/main/resources/tweets/
