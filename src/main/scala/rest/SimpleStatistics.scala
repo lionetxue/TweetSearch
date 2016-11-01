@@ -51,14 +51,14 @@ object SimpleStatistics extends App with FileSupport {
   }
 
   def topRetweets(tweets: Seq[Tweet], n: Int = 10) = {
-    val result = tweets.filterNot(_.text.startsWith("RT ")).sortBy(t => -t.retweet_count).take(n)
+    val result = tweets.filterNot(_.text.startsWith("RT ")).sortBy(t => -t.retweet_count).distinct.take(n)
     toPrettyString("TOP RETWEETS", result) { tweet =>
       s"${tweet.text.replaceAll("\n"," ")} (by @${tweet.user.map(_.screen_name).getOrElse("unknown")}, retweeted ${tweet.retweet_count} times)"
     }
   }
 
   def topFavoriteTweets(tweets: Seq[Tweet], n: Int = 10) = {
-    val result = tweets.sortBy(t => - t.favorite_count).take(n)
+    val result = tweets.sortBy(t => - t.favorite_count).distinct.take(n)
     toPrettyString("TOP FAVORITE TWEETS", result) { tweet =>
       s"${tweet.text.replaceAll("\n"," ")} (by @${tweet.user.map(_.screen_name).getOrElse("unknown")}, liked ${tweet.favorite_count} times)"
     }
